@@ -24,7 +24,7 @@ const BlockDAGBox = () => {
         setVirtualDaaScore(dag_info.virtualDaaScore)
         localStorage.setItem("cacheVirtualDaaScore", dag_info.virtualDaaScore)
         setHashrate((dag_info.difficulty * 2 * BPS))
-        localStorage.setItem("cacheHashrate", (dag_info.difficulty * 2).toFixed(2))
+        localStorage.setItem("cacheHashrate", (dag_info.difficulty * 2).toFixed(2) * BPS)
         setMaxHashrate(hashrateMax )
         localStorage.setItem("cacheHashrateMax", hashrateMax)
         //setFeerate(feeEstimate.normalBuckets[0].feerate)
@@ -39,7 +39,7 @@ const BlockDAGBox = () => {
             const dag_info = await getBlockdagInfo()
             setVirtualDaaScore(dag_info.virtualDaaScore)
             setHashrate((dag_info.difficulty * 2 * BPS))
-            localStorage.setItem("cacheHashrate", (dag_info.difficulty * 2 / 1000000000000).toFixed(2))
+            localStorage.setItem("cacheHashrate", (dag_info.difficulty * 2 ).toFixed(2) * BPS)
         }, 60000)
 
         const updateInterval2 = setInterval(async () => {
