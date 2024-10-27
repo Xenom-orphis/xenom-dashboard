@@ -4,7 +4,7 @@ import bkg from '/section.png'
 import './App.css'
 import CoinsupplyBox from "./CoinsupplyBox.jsx";
 import BlockDAGBox from "./BlockDAG.jsx";
-import BlockDAGVisualizer from './blockDAGVisualizer';
+import BlockDagVisualizer from './BlockDagVisualizer.js';
 import {useEffect, useState} from "react";
 import {SOCKET_SERVER} from "./explorer_constants.js";
 import BlockOverview from "./BlockOverview.jsx";
@@ -111,7 +111,7 @@ function App() {
           </div>
           <div className="section">
               <h1>BlockDAG Visualizer</h1>
-              <BlockDAGVisualizer data={data}/>
+              <BlockDagVisualizer data={data}/>
           </div>
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
           <div className="section">

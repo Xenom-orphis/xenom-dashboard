@@ -2,7 +2,7 @@
 import * as d3 from 'd3';
 import {useEffect, useRef} from "react";
 
-const BlockDAGVisualizer = ({ data }) => {
+const BlockDagVisualizer = ({ data }) => {
     const svgRef = useRef();
 
     useEffect(() => {
@@ -93,4 +93,4 @@ const BlockDAGVisualizer = ({ data }) => {
     return <svg ref={svgRef}></svg>;
 };
 
-export default BlockDAGVisualizer;
+export default BlockDagVisualizer;
