@@ -63,7 +63,7 @@ function App() {
                         });
                          [...new Map(blockArr.map(block => [block.header.daaScore, block])).values()].map(addBlock);
                         console.log(blockArr.join('\n'));
-                        socket.send('join-room');
+                       // socket.send('join-room');
 
 
                     } else if ('bluescore' in data) {
