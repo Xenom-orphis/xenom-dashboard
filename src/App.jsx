@@ -18,7 +18,7 @@ function App() {
 
         setBlocks((prevBlocks) => [...prevBlocks, newBlock]);
     };
-    let blockArr = []
+
     const recentBlocks = blocks.slice(-20).reverse();
 
     const data = {
@@ -32,7 +32,7 @@ function App() {
     };
 
     useEffect(() => {
-
+        let blockArr = []
         const socket = new WebSocket(SOCKET_SERVER);
 
         socket.onopen = () => {
@@ -55,14 +55,14 @@ function App() {
 
 
                             data['last-blocks'].blocks.map( v => {
-                            blockArr.push(v)
+                                blockArr.push(v)
                                 if(blockArr.length > 100){
                                     blockArr.reverse().splice(0, 40);
                                 }
-                            blockArr.map(addBlock);
-                            console.log(blockArr.join('\n'));
-                        })
 
+                        });
+                         [...new Map(blockArr.map(block => [block.header.daaScore, block])).values()].map(addBlock);
+                        console.log(blockArr.join('\n'));
                         socket.send('join-room');
 
 
@@ -94,7 +94,7 @@ function App() {
           <div className="section">
             <div style={{backgroundImage: `url(${viteLogo})`}} className="logo"></div>
           </div>
-
+          <LastBlocksContext.Provider value={{blocks, isConnected}}>
           <div className="section" >
              <div className="block"  style={{backgroundImage: `url(${bkg})`}}>
               <h2> Xenomorph Blockchain</h2>
@@ -109,13 +109,14 @@ function App() {
 
              </div>
           </div>
+          </LastBlocksContext.Provider>
           <div className="section">
               <h1>BlockDAG Visualizer</h1>
               <BlockDagVisualizer data={data}/>
           </div>
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
           <div className="section">
-              <BlockOverview lines={22} small blocks={blockArr}/>
+              <BlockOverview lines={22} small blocks={blocks}/>
           </div>
           </LastBlocksContext.Provider>
       </div>
