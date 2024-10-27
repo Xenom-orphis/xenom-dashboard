@@ -56,8 +56,8 @@ function App() {
 
                             data['last-blocks'].blocks.map( v => {
                                 blockArr.push(v)
-                                if(blockArr.length > 100){
-                                    blockArr.reverse().splice(0, 40);
+                                if(blockArr.length > 300){
+                                    blockArr.reverse().splice(0, 200);
                                 }
 
                         });

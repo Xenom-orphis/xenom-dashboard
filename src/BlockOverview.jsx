@@ -37,7 +37,7 @@ const BlockOverview = (props) => {
 
     console.log(`Average blocks emitted in the last 10 seconds: ${blocksPerSecond.toFixed(2)} per second`);
 
-
+    localStorage.setItem('BPS', blocksPerSecond.toFixed(2));
 
     console.log(`Blocks per second: ${blocksPerSecond.toFixed(2)}`);
     return <div className="block-overview">

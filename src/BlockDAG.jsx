@@ -2,7 +2,7 @@
 import {useContext, useEffect, useState} from "react";
 import {getBlockdagInfo, getHashrateMax, getKaspadInfo} from './kaspa-api-client';
 import {numberWithCommas} from "./helper";
-import { KASPA_UNIT} from "./explorer_constants";
+import { BPS, KASPA_UNIT} from "./explorer_constants";
 import LastBlocksContext from "./LastBlocksContext.js";
 
 
@@ -15,24 +15,15 @@ const BlockDAGBox = () => {
     const [feerate] = useState(localStorage.getItem("feerate"));
     const [mempool, setMempool] = useState(localStorage.getItem("mempool"));
 
-    // const kaspadInfo = await getKaspadInfo()
-    const currentTime = Date.now();
-    const cutoffTime = currentTime - 20000; // 1 seconds ago
-
-// Step 2: Filter blocks within the last 10 seconds
-    const recentBlocks = blocks.filter(block => block.header.timestamp >= cutoffTime);
-
-// Step 3: Calculate the average blocks per second over the last 10 seconds
-    const BPSAVG = recentBlocks.length / 20;
     const initBox = async () => {
         const dag_info = await getBlockdagInfo()
         const hashrateMax = await getHashrateMax()
        // const feeEstimate = await getFeeEstimate()
-
+       // const kaspadInfo = await getKaspadInfo()
 
         setVirtualDaaScore(dag_info.virtualDaaScore)
         localStorage.setItem("cacheVirtualDaaScore", dag_info.virtualDaaScore)
-        setHashrate((dag_info.difficulty * 2 * parseInt(BPSAVG)))
+        setHashrate((dag_info.difficulty * 2 * BPS))
         localStorage.setItem("cacheHashrate", (dag_info.difficulty * 2).toFixed(2))
         setMaxHashrate(hashrateMax )
         localStorage.setItem("cacheHashrateMax", hashrateMax)
@@ -44,17 +35,12 @@ const BlockDAGBox = () => {
 
     useEffect(() => {
         initBox().then(console.log)
-
         const updateInterval = setInterval(async () => {
-
-
-// Step 3: Calculate the average blocks per second over the last 10 seconds
-
             const dag_info = await getBlockdagInfo()
             setVirtualDaaScore(dag_info.virtualDaaScore)
-            setHashrate((dag_info.difficulty * 2 * BPSAVG))
+            setHashrate((dag_info.difficulty * 2 * BPS))
             localStorage.setItem("cacheHashrate", (dag_info.difficulty * 2 / 1000000000000).toFixed(2))
-        }, 6000)
+        }, 60000)
 
         const updateInterval2 = setInterval(async () => {
             //const feeEstimate = await getFeeEstimate()
