@@ -1,4 +1,4 @@
-let SOCKET_SERVER = "";
+let SOCKET_SERVER = "wss://ws.xenom-morphis.tech";
 let SUFFIX = ""
 let API_SERVER =  "https://explorer.xenom-morphis.tech"
 let ADDRESS_PREFIX = "xenom:"
