@@ -4,7 +4,7 @@ import bkg from '/section.png'
 import './App.css'
 import CoinsupplyBox from "./CoinsupplyBox.jsx";
 import BlockDAGBox from "./BlockDAG.jsx";
-import BlockDagVisualizer from './BlockDagVisualizer.js';
+import BlockDagVisualizer from './BlockDagVisualizer.jsx';
 import {useEffect, useState} from "react";
 import {SOCKET_SERVER} from "./explorer_constants.js";
 import BlockOverview from "./BlockOverview.jsx";
