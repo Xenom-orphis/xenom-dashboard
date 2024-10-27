@@ -62,7 +62,7 @@ function App() {
 
                         });
                          [...new Map(blockArr.map(block => [block.header.daaScore, block])).values()].map(addBlock);
-                        console.log(blockArr.join('\n'));
+
                        // socket.send('join-room');
 
 
@@ -74,7 +74,7 @@ function App() {
                     } else {
                         console.warn(`Unknown event: ${JSON.stringify(data)}`);
                     }
-                    console.warn(blockArr)
+
             } catch (e) {
                 console.log(e)
             }
