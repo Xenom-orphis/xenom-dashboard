@@ -146,7 +146,7 @@ const BlockDAGBox = () => {
 
                 <tr>
                     <td colspan="2" className="text-center">
-                        <h3>NETWORK INFO</h3>
+                        <h3>Network Info</h3>
                     </td>
                 </tr>
                 <tr>
