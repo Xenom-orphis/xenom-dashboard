@@ -15,20 +15,20 @@ const BlockDAGBox = () => {
     const [feerate] = useState(localStorage.getItem("feerate"));
     const [mempool, setMempool] = useState(localStorage.getItem("mempool"));
 
+    // const kaspadInfo = await getKaspadInfo()
+    const currentTime = Date.now();
+    const cutoffTime = currentTime - 20000; // 1 seconds ago
 
+// Step 2: Filter blocks within the last 10 seconds
+    const recentBlocks = blocks.filter(block => block.header.timestamp >= cutoffTime);
+
+// Step 3: Calculate the average blocks per second over the last 10 seconds
+    const BPSAVG = recentBlocks.length / 20;
     const initBox = async () => {
         const dag_info = await getBlockdagInfo()
         const hashrateMax = await getHashrateMax()
        // const feeEstimate = await getFeeEstimate()
-       // const kaspadInfo = await getKaspadInfo()
-        const currentTime = Date.now();
-        const cutoffTime = currentTime - 20000; // 1 seconds ago
 
-// Step 2: Filter blocks within the last 10 seconds
-        const recentBlocks = blocks.filter(block => block.header.timestamp >= cutoffTime);
-
-// Step 3: Calculate the average blocks per second over the last 10 seconds
-        const BPSAVG = recentBlocks.length / 20;
 
         setVirtualDaaScore(dag_info.virtualDaaScore)
         localStorage.setItem("cacheVirtualDaaScore", dag_info.virtualDaaScore)
@@ -44,12 +44,7 @@ const BlockDAGBox = () => {
 
     useEffect(() => {
         initBox().then(console.log)
-        const currentTime = Date.now();
-        const cutoffTime = currentTime - 20000; // 1 seconds ago
 
-// Step 2: Filter blocks within the last 10 seconds
-        const recentBlocks = blocks.filter(block => block.header.timestamp >= cutoffTime);
-        const BPSAVG = recentBlocks.length / 20;
         const updateInterval = setInterval(async () => {
 
 
