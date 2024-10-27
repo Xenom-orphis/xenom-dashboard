@@ -88,12 +88,7 @@ const CBox = () => {
     return <>
         <div className="cardBox mx-0">
             <table style={{fontSize: "1rem"}}>
-                <tr>
-                    <td colspan='2' className="text-center" style={{"fontSize": "4rem"}}>
 
-                        <div id="light1" className="cardLight"/>
-                    </td>
-                </tr>
                 <tr>
                     <td colspan="2" className="text-center">
                         <h3>Coin supply</h3>

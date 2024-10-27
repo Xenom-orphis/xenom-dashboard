@@ -2,6 +2,7 @@
 import viteLogo from '/vite.svg'
 import './App.css'
 import CoinsupplyBox from "./CoinsupplyBox.jsx";
+import BlockDAGBox from "./BlockDAG.jsx";
 
 function App() {
 
@@ -11,9 +12,12 @@ function App() {
 
       <>
           <div style={{backgroundImage: `url(${viteLogo})`}} className="logo"></div>
+          <div className="col">
+          <BlockDAGBox></BlockDAGBox>
             <CoinsupplyBox className="coinsupply">
 
             </CoinsupplyBox>
+          </div>
       </>
 
   )
