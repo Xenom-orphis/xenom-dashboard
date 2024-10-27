@@ -110,10 +110,7 @@ function App() {
              </div>
           </div>
           </LastBlocksContext.Provider>
-          <div className="section">
-              <h1>BlockDAG Visualizer</h1>
-              <BlockDagVisualizer data={data}/>
-          </div>
+
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
           <div className="section">
               <BlockOverview lines={22} small blocks={blocks}/>
