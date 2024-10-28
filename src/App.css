@@ -18,6 +18,19 @@ html, body {
 #root::-webkit-scrollbar {
 
 }
+.circular {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #000000;
+  border: 1px solid white;
+  font-size: 16px;
+  color: white;
+}
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -42,17 +55,21 @@ html, body {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 .col{
-  margin: 200px auto;
-  right: 2%;
-  z-index: 11;
   display: flex;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: center;
   flex-direction: row-reverse;
   width: 100%;
   height: 100%;
   bottom: 50px;
   gap: 100px;
+  flex-wrap: wrap;
+}
+.column{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 100%;
 }
 .section {
   justify-content: flex-start;
@@ -74,7 +91,7 @@ html, body {
   display: flex;
   flex-direction: column;
 }
-.section-graph h1 , .section-graph div {
+.section-graph h1 , .section-graph div:not(.column) {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -100,7 +117,7 @@ html, body {
 }
 .cardBox {
   padding: 36px;
-
+  display: contents;
 
   height: 400px;
   font-family: 'Inter', sans-serif;

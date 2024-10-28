@@ -1,39 +1,65 @@
-import  {useContext, useEffect, useRef, useState} from 'react';
+// BlockDAGViewer.js
+import React, { useEffect, useRef, useState } from 'react';
 import Graph from 'graphology';
 import Sigma from 'sigma';
-import LastBlocksContext from "./LastBlocksContext.js";
-
-const BlockDAGVisualizer = (  { blockData}  ) => {
+import blockImg from '/crypto-block.svg';
+const BlockDAGViewer = ({ blocks }) => {
     const containerRef = useRef(null);
-    //const {blocks} = useContext(LastBlocksContext)
+    const [isPaused, setIsPaused] = useState(false);
+    const [currentBlocks, setCurrentBlocks] = useState(blocks);
+    const [timeframeStart, setTimeframeStart] = useState(0);
+    const [selectedBlock, setSelectedBlock] = useState(null); // State for clicked block info
+    const timeframe = 10;
+
+    const togglePlayPause = () => setIsPaused(!isPaused);
+
     useEffect(() => {
-        // Initialize graphology graph
+        if (!isPaused) {
+            setCurrentBlocks(blocks);
+        }
+    }, [blocks, isPaused]);
+
+    useEffect(() => {
         const graph = new Graph();
 
-        // Add nodes and edges from block data
-        blockData.forEach(block => {
-            const { hash, parentsByLevel } = block.header;
+        const visibleBlocks = currentBlocks.slice(timeframeStart, timeframeStart + timeframe);
 
-            // Add the block as a node if it doesn't exist
+        visibleBlocks.forEach(block => {
+            console.log(block);
+            const { hash, selectedParentHash, mergeSetBluesHashes, childrenHashes, isChainBlock } = block.verboseData;
+            const {daaScore, parentsByLevel, nonce} = block.header
+            // Add each block node with an SVG image if it doesn't exist
             if (!graph.hasNode(hash)) {
                 graph.addNode(hash, {
                     label: hash,
-                    size: 10,
-                    color: "#456",
+                    size: 20,
+                    image: {
+                        url: blockImg ,
+                        scale: 1.5,
+                        clip: 0.85
+                    },
                     x: Math.random(), // Random position for demonstration
-                    y: Math.random()
+                    y: Math.random(),
+                    data: { hash, selectedParentHash, mergeSetBluesHashes, childrenHashes, isChainBlock , daaScore, parentsByLevel, nonce}
+
                 });
             }
 
-            // Add edges for each parent in parentsByLevel
             parentsByLevel.flat().forEach(parentHash => {
                 if (!graph.hasNode(parentHash)) {
                     graph.addNode(parentHash, {
                         label: parentHash,
-                        size: 6,
-                        color: "#ff3636",
+                        size: 20,
+                        image: {
+                            url: "/crypto-block.svg",
+                            scale: 1.5,
+                            clip: 0.85
+                        },
                         x: Math.random(),
-                        y: Math.random()
+                        y: Math.random(),
+                        data: { hash, selectedParentHash, mergeSetBluesHashes, childrenHashes, isChainBlock , daaScore, parentsByLevel, nonce}
+
+
                     });
                 }
                 if (!graph.hasEdge(parentHash, hash)) {
@@ -42,31 +68,66 @@ const BlockDAGVisualizer = (  { blockData}  ) => {
             });
         });
 
-        // Initialize Sigma with the container and graph
+        // Initialize Sigma instance with the graph
         const sigmaInstance = new Sigma(graph, containerRef.current, {
             renderEdges: true,
             renderLabels: false
         });
 
-        // Clean up on unmount
+        // Add click listener for nodes to display block information
+        sigmaInstance.on('clickNode', (event) => {
+
+            const nodeData = graph.getNodeAttributes(event.node);
+
+            setSelectedBlock(nodeData.data); // Set selected block data for sidebar
+        });
+
         return () => sigmaInstance.kill();
-    }, [blockData]);
-
+    }, [currentBlocks, timeframeStart]);
+        console.log(selectedBlock)
     return (
-        <>
-            <h1>BlockDAG Visualization</h1>
+        <div style={{display: 'flex'}}>
+            <div style={{marginBottom: '10px'}}>
+                <button className="circular" onClick={togglePlayPause}>{isPaused ? 'Play' : 'Pause'}</button>
 
-    <div
-        ref={containerRef}
-            style={{
-                width: '100%',
-                height: '100vh',
-                background: 'black',
-                margin: '0'
-            }}
-        />
-        </>
+                <label style={{marginLeft: '10px'}}>
+                    Timeframe Start:
+                    <input
+                        type="range"
+                        min="0"
+                        max={Math.max(0, blocks.length - timeframe)}
+                        value={timeframeStart}
+                        onChange={(e) => setTimeframeStart(parseInt(e.target.value, 10))}
+                        style={{width: '300px', marginLeft: '10px'}}
+                    />
+                </label>
+            </div>
+            {/* Sidebar for displaying block info */}
+            {selectedBlock && isPaused && (
+                <div className="column" onClick={ () => setSelectedBlock(null) }>
+                    <h3>Block Information</h3>
+                    <p><strong>Block Hash:</strong> {selectedBlock.hash}</p>
+                    <p><strong>Block Parents:</strong> {selectedBlock.parentsByLevel.reverse()[0].join(', ')}</p>
+                    <p><strong>Block Merge Set:</strong> {selectedBlock.mergeSetBluesHashes?.join(', ')}</p>
+                    <p><strong>Block Children:</strong> {selectedBlock.childrenHashes?.join(', ')}</p>
+                    <p><strong>Is Block In Chain:</strong> {selectedBlock.isChainBlock ? 'Yes' : 'No'}</p>
+                    <p><strong>Block Color:</strong> {selectedBlock.color || 'Blue'}</p>
+                    <p><strong>Block DAA Score:</strong> {selectedBlock.daaScore}</p>
+                </div>
+            )}
+
+            <div
+                ref={containerRef}
+                style={{
+                    width: '100%',
+                    height: '80vh',
+                    background: '#000',
+                    margin: '0'
+                }}
+            />
+
+        </div>
     );
 };
 
-export default BlockDAGVisualizer;
+export default BlockDAGViewer;

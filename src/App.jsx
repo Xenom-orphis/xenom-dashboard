@@ -24,23 +24,23 @@ function App() {
 
 
     useEffect(() => {
-        function resizeBackground() {
-            const background = document.getElementById('background');
-            const width = window.innerWidth;
-             const height = window.innerHeight;
-
-            // Adjust background-size based on window size
-            if (width > 768) {
-                background.style.backgroundSize = 'cover';
-            } else {
-                background.style.backgroundSize = 'cover';
-                background.style.backgroundSize = height/ width * 100 + '%'
-            }
-        }
-
-        window.addEventListener('resize', resizeBackground);
-        window.addEventListener('load', resizeBackground); // To set the initial size on load
-
+        // function resizeBackground() {
+        //     const background = document.getElementById('background');
+        //     const width = window.innerWidth;
+        //      const height = window.innerHeight;
+        //
+        //     // Adjust background-size based on window size
+        //     if (width > 768) {
+        //         background.style.backgroundSize = 'cover';
+        //     } else {
+        //         background.style.backgroundSize = 'cover';
+        //         background.style.backgroundSize = height/ width * 100 + '%'
+        //     }
+        // }
+        //
+        // window.addEventListener('resize', resizeBackground);
+        // window.addEventListener('load', resizeBackground); // To set the initial size on load
+        //
 
         let blockArr = []
         const socket = new WebSocket(SOCKET_SERVER);
@@ -126,7 +126,7 @@ function App() {
 
           <div className="section-graph">
 
-              <BlockDagVisualizer blockData={blockData}/>
+              <BlockDagVisualizer blocks={blockData}/>
           </div>
 
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
