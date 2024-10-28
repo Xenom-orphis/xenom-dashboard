@@ -27,22 +27,21 @@ const BlockOverview = (props) => {
     }, [blocks])
     // Step 1: Get current time and calculate cutoff for last 10 seconds
     const currentTime = Date.now();
-    const cutoffTime = currentTime - 20000; // 1 seconds ago
+    const cutoffTime = currentTime - 10000; // 1 seconds ago
 
 // Step 2: Filter blocks within the last 10 seconds
     const recentBlocks = blocks.filter(block => block.header.timestamp >= cutoffTime);
 
 // Step 3: Calculate the average blocks per second over the last 10 seconds
-    const blocksPerSecond = recentBlocks.length / 20;
+    const blocksPerSecond = recentBlocks.length / 10;
 
-    console.log(`Average blocks emitted in the last 10 seconds: ${blocksPerSecond.toFixed(2)} per second`);
 
     localStorage.setItem('BPS', blocksPerSecond.toFixed(2));
 
-    console.log(`Blocks per second: ${blocksPerSecond.toFixed(2)}`);
+
     return <div className="block-overview">
         <div className="d-flex flex-row w-100">
-        <h2> Latest Blocks (BPS avg. 20 secs) {blocksPerSecond.toFixed(2)}</h2>
+        <h2> Latest Blocks (BPS avg. 10 secs) {blocksPerSecond.toFixed(2)}</h2>
         </div>
 
         <div className="block-overview-content">
