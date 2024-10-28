@@ -40,7 +40,7 @@ const BlockDAGBox = () => {
             const dag_info = await getBlockdagInfo()
             setVirtualDaaScore(dag_info.virtualDaaScore)
 
-            const hashrate = (dag_info.difficulty  * 2 ) * ( 1/ BPS) ;
+            const hashrate = (dag_info.difficulty  * 2 ) *  BPS ;
             setHashrate(hashrate)
             localStorage.setItem("cacheHashrate", hashrate )
         }, 5000)
