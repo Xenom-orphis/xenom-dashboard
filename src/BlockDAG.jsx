@@ -23,8 +23,9 @@ const BlockDAGBox = () => {
 
         setVirtualDaaScore(dag_info.virtualDaaScore)
         localStorage.setItem("cacheVirtualDaaScore", dag_info.virtualDaaScore)
-
-        let hashrate = localStorage.getItem("cacheHashrate" )
+        const bps = (BPS > 1 ? BPS : 4)
+        localStorage.setItem('BPS', bps)
+        let hashrate = dag_info.difficulty * 2 * bps
         setMaxHashrate(hashrateMax )
         setHashrate(Number(hashrate));
         localStorage.setItem("cacheHashrateMax", hashrateMax)
@@ -39,11 +40,11 @@ const BlockDAGBox = () => {
         const updateInterval = setInterval(async () => {
             const dag_info = await getBlockdagInfo()
             setVirtualDaaScore(dag_info.virtualDaaScore)
-
-            const hashrate = (dag_info.difficulty  * 2 ) *  BPS ;
+            const bps = localStorage.getItem('BPS')
+            const hashrate = (dag_info.difficulty  * 2 ) *  Number(bps) ;
             setHashrate(hashrate)
             localStorage.setItem("cacheHashrate", hashrate )
-        }, 5000)
+        }, 1500)
 
         const updateInterval2 = setInterval(async () => {
             //const feeEstimate = await getFeeEstimate()
@@ -52,7 +53,7 @@ const BlockDAGBox = () => {
            // localStorage.setItem("feerate", feeEstimate.priorityBucket.feerate)
             setMempool(kaspadInfo.mempoolSize)
             localStorage.setItem("mempool", kaspadInfo.mempoolSize)
-        }, 5000)
+        }, 1500)
 
         return (async () => {
             clearInterval(updateInterval)

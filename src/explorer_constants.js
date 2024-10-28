@@ -4,7 +4,7 @@ let API_SERVER =  "https://explorer.xenom-morphis.tech"
 let ADDRESS_PREFIX = "xenom:"
 let KASPA_UNIT = "XEN"
 
-let BPS = Number(localStorage.getItem('BPS')) || 0;
+let BPS = Number(localStorage.getItem('BPS')) || 4;
 
 
 
