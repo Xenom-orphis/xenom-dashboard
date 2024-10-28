@@ -19,17 +19,9 @@ function App() {
         setBlocks((prevBlocks) => [...prevBlocks, newBlock]);
     };
 
-    const recentBlocks = blocks.slice(-20).reverse();
+    const blockData = blocks;
 
-    const data = {
-        nodes: recentBlocks.map(b => ({ id: b.header.hash })),
-        links: recentBlocks
-            .filter(b => b.header.parentsByLevel[0]) // Ensure there's at least one parent
-            .map(b => ({
-                source: b.header.hash,
-                target: b.header.parentsByLevel[0], // Link to the first parent in the list
-            })),
-    };
+
 
     useEffect(() => {
         function resizeBackground() {
@@ -74,11 +66,12 @@ function App() {
 
                             data['last-blocks'].blocks.map( v => {
                                 blockArr.push(v)
-                                if(blockArr.length > 300){
-                                    blockArr.reverse().splice(0, 200);
-                                }
+
 
                         });
+                        if(blockArr.length > 300){
+                            blockArr.reverse().splice(0, 200);
+                        }
                          [...new Map(blockArr.map(block => [block.header.daaScore, block])).values()].map(addBlock);
 
                        // socket.send('join-room');
@@ -98,9 +91,10 @@ function App() {
             }
 
         };
+
         const interval = setInterval( () =>  {
             socket.send('last-blocks' )
-        }, 1500 )
+        }, 800 )
         return () => {
             clearInterval(interval)
 
@@ -112,6 +106,7 @@ function App() {
           <div className="section " id="background" style={{backgroundImage: `url(${viteLogo})`}}>
 
           </div>
+
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
           <div className="section" >
              <div className="block"  style={{backgroundImage: `url(${bkg})`}}>
@@ -128,6 +123,11 @@ function App() {
              </div>
           </div>
           </LastBlocksContext.Provider>
+
+          <div className="section-graph">
+
+              <BlockDagVisualizer blockData={blockData}/>
+          </div>
 
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
           <div className="section">

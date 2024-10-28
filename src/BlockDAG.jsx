@@ -43,6 +43,7 @@ const BlockDAGBox = () => {
             const bps = localStorage.getItem('BPS')
             const hashrate = (dag_info.difficulty  * 2 ) *  Number(bps) ;
             setHashrate(hashrate)
+
             localStorage.setItem("cacheHashrate", hashrate )
         }, 1500)
 

@@ -3,7 +3,7 @@ html, body {
   width: 100%;
   height: 100%;
   background-color: #000000;
-  scrollbar-width: none; /* Firefox */
+
 }
 #root {
   display: flex;
@@ -16,7 +16,7 @@ html, body {
 
 }
 #root::-webkit-scrollbar {
-  display: none;
+
 }
 .wrapper {
   display: flex;
@@ -65,7 +65,21 @@ html, body {
   width: 100%;
   height: 100vh;
 }
-
+.section-graph {
+  align-items: center;
+  position: relative;
+  background-color: #000000;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.section-graph h1 , .section-graph div {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
 .hashh {
   white-space: nowrap;
   text-overflow: ellipsis;

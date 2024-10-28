@@ -1,64 +1,72 @@
 import  {useContext, useEffect, useRef, useState} from 'react';
-import * as d3 from 'd3';
+import Graph from 'graphology';
+import Sigma from 'sigma';
 import LastBlocksContext from "./LastBlocksContext.js";
 
-const BlockDAGVisualizer = ( ) => {
-    const svgRef = useRef();
-    const {blocks, isConnected} = useContext(LastBlocksContext);
-    console.log(blocks)
+const BlockDAGVisualizer = (  { blockData}  ) => {
+    const containerRef = useRef(null);
+    //const {blocks} = useContext(LastBlocksContext)
     useEffect(() => {
-        const svg = d3.select(svgRef.current);
-        svg.selectAll('*').remove();  // Clear previous render
+        // Initialize graphology graph
+        const graph = new Graph();
 
-        const width = 1000;
-        const height = 600;
-        if(blocks.length > 200) {
-            blocks.reverse().splice(0, 100)
-        }
-        const nodes = blocks.map(block => ({ id: block.header.hash, timestamp: block.header.timestamp }));
-        const links = blocks.flatMap(block =>
-            block.header.parentsByLevel.map(parent => ({ source: parent, target: block.header.hash }))
-        );
+        // Add nodes and edges from block data
+        blockData.forEach(block => {
+            const { hash, parentsByLevel } = block.header;
 
-        // Set up force simulation
-        const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(50))
-            .force("charge", d3.forceManyBody().strength(-200))
-            .force("center", d3.forceCenter(width / 2, height / 2));
+            // Add the block as a node if it doesn't exist
+            if (!graph.hasNode(hash)) {
+                graph.addNode(hash, {
+                    label: hash,
+                    size: 10,
+                    color: "#456",
+                    x: Math.random(), // Random position for demonstration
+                    y: Math.random()
+                });
+            }
 
-        const link = svg.append("g")
-            .selectAll("line")
-            .data(links)
-            .enter()
-            .append("line")
-            .style("stroke", "#aaa");
-
-        const node = svg.append("g")
-            .selectAll("circle")
-            .data(nodes)
-            .enter()
-            .append("circle")
-            .attr("r", 5)
-            .attr("fill", "#69b3a2");
-
-        node.append("title").text(d => d.id);
-
-        simulation.on("tick", () => {
-            link
-                .attr("x1", d => d.source.x)
-                .attr("y1", d => d.source.y)
-                .attr("x2", d => d.target.x)
-                .attr("y2", d => d.target.y);
-
-            node
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y);
+            // Add edges for each parent in parentsByLevel
+            parentsByLevel.flat().forEach(parentHash => {
+                if (!graph.hasNode(parentHash)) {
+                    graph.addNode(parentHash, {
+                        label: parentHash,
+                        size: 6,
+                        color: "#ff3636",
+                        x: Math.random(),
+                        y: Math.random()
+                    });
+                }
+                if (!graph.hasEdge(parentHash, hash)) {
+                    graph.addDirectedEdge(parentHash, hash, { color: "#a88204", size: 1 });
+                }
+            });
         });
 
-        return () => simulation.stop();
-    }, [blocks]);
+        // Initialize Sigma with the container and graph
+        const sigmaInstance = new Sigma(graph, containerRef.current, {
+            renderEdges: true,
+            renderLabels: false
+        });
 
-    return <svg ref={svgRef} width={1000} height={600}></svg>;
+        // Clean up on unmount
+        return () => sigmaInstance.kill();
+    }, [blockData]);
+
+    return (
+        <>
+            <h1>BlockDAG Visualization</h1>
+
+    <div
+        ref={containerRef}
+            style={{
+                width: '100%',
+                height: '100vh',
+                background: 'black',
+                margin: '0'
+            }}
+        />
+        </>
+    );
 };
 
 export default BlockDAGVisualizer;
