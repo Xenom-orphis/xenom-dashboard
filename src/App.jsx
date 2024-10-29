@@ -70,7 +70,7 @@ function App() {
 
                         });
                         if(blockArr.length > 300){
-                            blockArr.reverse().splice(0, 200);
+                           blockArr = blockArr.reverse().splice(0, 200);
                         }
                          [...new Map(blockArr.map(block => [block.header.daaScore, block])).values()].map(addBlock);
 
