@@ -126,7 +126,7 @@ function App() {
 
           <div className="section-graph">
 
-              <BlockDagVisualizer blocks={blockData}/>
+              <BlockDagVisualizer blocks={blocks}/>
           </div>
 
           <LastBlocksContext.Provider value={{blocks, isConnected}}>

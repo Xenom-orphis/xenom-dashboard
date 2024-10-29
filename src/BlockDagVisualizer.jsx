@@ -25,7 +25,7 @@ const BlockDAGViewer = ({ blocks }) => {
         const visibleBlocks = currentBlocks.slice(timeframeStart, timeframeStart + timeframe);
 
         visibleBlocks.forEach(block => {
-            console.log(block);
+
             const { hash, selectedParentHash, mergeSetBluesHashes, childrenHashes, isChainBlock } = block.verboseData;
             const {daaScore, parentsByLevel, nonce} = block.header
             // Add each block node with an SVG image if it doesn't exist
@@ -84,7 +84,7 @@ const BlockDAGViewer = ({ blocks }) => {
 
         return () => sigmaInstance.kill();
     }, [currentBlocks, timeframeStart]);
-        console.log(selectedBlock)
+
     return (
         <div style={{display: 'flex'}}>
             <div style={{marginBottom: '10px'}}>
