@@ -5,7 +5,7 @@ import Sigma from 'sigma';
 import blockImg from '/crypto-block.svg';
 const BlockDAGViewer = ({ blocks }) => {
     const containerRef = useRef(null);
-    const [isPaused, setIsPaused] = useState(false);
+    const [isPaused, setIsPaused] = useState(true);
     const [currentBlocks, setCurrentBlocks] = useState(blocks);
     const [timeframeStart, setTimeframeStart] = useState(0);
     const [selectedBlock, setSelectedBlock] = useState(null); // State for clicked block info
