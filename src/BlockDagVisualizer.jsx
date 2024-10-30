@@ -27,7 +27,8 @@ const BlockDAGViewer = ({ blocks }) => {
         visibleBlocks.forEach(block => {
 
             const { hash, selectedParentHash, mergeSetBluesHashes, childrenHashes, isChainBlock } = block.verboseData;
-            const {daaScore, parentsByLevel, nonce} = block.header
+            const {daaScore, parentsByLevel, nonce, extra } = block.header
+
             // Add each block node with an SVG image if it doesn't exist
             if (!graph.hasNode(hash)) {
                 graph.addNode(hash, {

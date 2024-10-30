@@ -14,7 +14,14 @@ const BlockDAGBox = () => {
     const [maxHashrate, setMaxHashrate] = useState(localStorage.getItem("cacheHashrateMax"));
     const [feerate] = useState(localStorage.getItem("feerate"));
     const [mempool, setMempool] = useState(localStorage.getItem("mempool"));
+    function calculateNetworkHashrate(difficulty) {
+        const bps = localStorage.getItem('BPS')
+        const blockInterval = 1 / Number(bps); // 11 BPS implies ~0.0909 seconds per block
+        const targetConstant = 2 // Represents 2^32
 
+        // Network hashrate formula
+        return (difficulty * targetConstant) / blockInterval;
+    }
     const initBox = async () => {
         const dag_info = await getBlockdagInfo()
         const hashrateMax = await getHashrateMax()
@@ -25,7 +32,7 @@ const BlockDAGBox = () => {
         localStorage.setItem("cacheVirtualDaaScore", dag_info.virtualDaaScore)
         const bps = (BPS > 1 ? BPS : 4)
         localStorage.setItem('BPS', bps)
-        let hashrate = dag_info.difficulty * 2 * bps
+        let hashrate = calculateNetworkHashrate(dag_info.difficulty )
         setMaxHashrate(hashrateMax )
         setHashrate(Number(hashrate));
         localStorage.setItem("cacheHashrateMax", hashrateMax)
@@ -35,13 +42,15 @@ const BlockDAGBox = () => {
         //localStorage.setItem("mempool", kaspadInfo.mempoolSize)
     }
 
+
     useEffect(() => {
         initBox()
         const updateInterval = setInterval(async () => {
             const dag_info = await getBlockdagInfo()
             setVirtualDaaScore(dag_info.virtualDaaScore)
-            const bps = localStorage.getItem('BPS')
-            const hashrate = (dag_info.difficulty  * 2 ) *  Number(bps) ;
+
+            const hashrate = calculateNetworkHashrate(dag_info.difficulty);
+            console.log(`Network Hashrate: ${hashrate.toFixed(2)} H/s`);
             setHashrate(hashrate)
 
             localStorage.setItem("cacheHashrate", hashrate )

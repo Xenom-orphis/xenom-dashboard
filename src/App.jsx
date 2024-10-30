@@ -69,7 +69,7 @@ function App() {
 
 
                         });
-                        if(blockArr.length > 300){
+                        if(blockArr.length > 200){
                            blockArr = blockArr.reverse().splice(0, 200);
                         }
                          [...new Map(blockArr.map(block => [block.header.daaScore, block])).values()].map(addBlock);
@@ -127,6 +127,7 @@ function App() {
           <div className="section-graph">
 
               <BlockDagVisualizer blocks={blocks}/>
+
           </div>
 
           <LastBlocksContext.Provider value={{blocks, isConnected}}>
