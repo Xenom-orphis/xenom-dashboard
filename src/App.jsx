@@ -101,6 +101,7 @@ function App() {
 
 
         const interval2 = setInterval( () => {
+            localStorage.removeItem("cacheBlocks")
             setBlocks([])
         },1000 * 60 * 3)
         return () => {
