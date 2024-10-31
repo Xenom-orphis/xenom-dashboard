@@ -12,7 +12,7 @@ const BlockDAGViewer = ({ blocks }) => {
     const timeframe = 10;
 
     const togglePlayPause = () => setIsPaused(!isPaused);
-
+    console.log(blocks)
     useEffect(() => {
         if (!isPaused) {
             setCurrentBlocks(blocks);

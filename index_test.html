@@ -1,0 +1,3400 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>BlockDAG Visualization with Sigma.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/2.4.0/sigma.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology/0.25.4/graphology.umd.min.js"></script>
+</head>
+<body style="background: lightgrey">
+<div id="container" style="width: 100%; height: 80vh; background: white; margin: auto"></div>
+<script>
+    // Function to parse block data and build the graph
+    function buildBlockDAG(blockData) {
+        const graph = new graphology.Graph();
+
+        blockData.forEach(block => {
+            const { hash, parentsByLevel } = block.header;
+
+            // Add node for each block
+            if (!graph.hasNode(hash)) {
+                graph.addNode(hash, {
+                    label: hash,
+                    size: 10,
+                    color: "blue",
+                    x: Math.random(), // Random position for demonstration
+                    y: Math.random()
+                });
+            }
+
+            // Add edges for parent relationships
+            parentsByLevel.forEach(parentHash => {
+                if (!graph.hasNode(parentHash)) {
+                    graph.addNode(parentHash, {
+                        label: parentHash,
+                        size: 8,
+                        color: "red",
+                        x: Math.random(),
+                        y: Math.random()
+                    });
+                }
+                if (!graph.hasEdge(parentHash, hash)) {
+                    graph.addDirectedEdge(parentHash, hash, { color: "purple", size: 2 });
+                }
+            });
+        });
+
+        return graph;
+    }
+
+    // Example blockDAG data structure
+    const blockData = [
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "76ed26f26f999ba1d59a75b34f0eaa5ecb2ba25e3535e38ec5477fe72f1d4b6f",
+                "bits": 470364151,
+                "blueScore": 5170165,
+                "blueWork": "000000000000000000000000000000000ab7d51d6032a031",
+                "daaScore": 5486216,
+                "hash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "hashMerkleRoot": "fc44dde37545b4e6a74fcc0b790ba594e83b73ccb5e9d802549ebc8993a21aa9",
+                "nonce": 31901533031379676,
+                "parentsByLevel": [
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085308919,
+                "utxoCommitment": "07f870b0266d8b0269050698cf2e8155b96194e84f9c6a93904ff8db6cf9dc9b",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020624057dbef5d1cb9ea51fba21e0df77e32e5233e1bdf46dcc65ce74f13e8c0e3ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp3yq47maaw3ew0228a6y8sd7alr9efr8cda73kucewwwncnarqwxtnale8jh",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f5e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "blockTime": 1730085308919,
+                        "computeMass": 0,
+                        "hash": "fc44dde37545b4e6a74fcc0b790ba594e83b73ccb5e9d802549ebc8993a21aa9",
+                        "transactionId": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170165,
+                "childrenHashes": [],
+                "difficulty": 59838261923.56452,
+                "hash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211",
+                    "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211",
+                "transactionIds": [
+                    "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "f4e3214157571030e71c6743f83359e39d6a3c900e6cc19a1d1d395f2be7a18f",
+                "bits": 470363973,
+                "blueScore": 5170163,
+                "blueWork": "000000000000000000000000000000000ab7d4e59a4b40b9",
+                "daaScore": 5486214,
+                "hash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                "hashMerkleRoot": "c627964330f9e0149d102955693e371e0dc6a856e05423bcd475a5f57d97da2f",
+                "nonce": 1373037796279110,
+                "parentsByLevel": [
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085308712,
+                "utxoCommitment": "574bb79a0350ac963fff163fe8f942f3748f79f9b73634503ff68f89ab3ee9b8",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "0000200a54dc8aac9e202b646623cf60fea088e7a2b3f94887083487a79ad53bfa018fac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qq99fhy24j0zq2myvc3u7c875zyw0g4nl9ygwzp5s7ne44fmlgqc7vc5jy2rf",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "0000205d8024da190883c4663187941d5cd27b9f1062d7d836dbfd92a031170115ad32ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qpwcqfx6ryyg83rxxxreg82u6fae7yrz6lvrdklaj2srz9cpzkknydhnyycyh",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f3e34e000000000000743ba40b00000000002220ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                        "blockTime": 1730085308712,
+                        "computeMass": 0,
+                        "hash": "c627964330f9e0149d102955693e371e0dc6a856e05423bcd475a5f57d97da2f",
+                        "transactionId": "510eb1666ccc4e2c69ffef01b9eed61019063852555296dc1d2520e90ca88820"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170163,
+                "childrenHashes": [],
+                "difficulty": 59855957169.02267,
+                "hash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777",
+                    "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777",
+                "transactionIds": [
+                    "510eb1666ccc4e2c69ffef01b9eed61019063852555296dc1d2520e90ca88820"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8774ad5b2e89e1f96d0afdf160ce7760af43d52b6222ff857b2cae386b95c8c8",
+                "bits": 470363372,
+                "blueScore": 5170161,
+                "blueWork": "000000000000000000000000000000000ab7d4adcd42348d",
+                "daaScore": 5486212,
+                "hash": "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c",
+                "hashMerkleRoot": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                "nonce": 9716539668521020000,
+                "parentsByLevel": [
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309215,
+                "utxoCommitment": "e93858305307dd450ab417f48b2502ffc25379403ead996729eae27c1765bfec",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f1e34e000000000000743ba40b00000000002220fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c",
+                        "blockTime": 1730085309215,
+                        "computeMass": 0,
+                        "hash": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                        "transactionId": "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170161,
+                "childrenHashes": [],
+                "difficulty": 59915780875.142136,
+                "hash": "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007",
+                "transactionIds": [
+                    "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d",
+                "bits": 470363758,
+                "blueScore": 5170167,
+                "blueWork": "000000000000000000000000000000000ab7d5551cdc4eda",
+                "daaScore": 5486218,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "hashMerkleRoot": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                "nonce": 12523409151752584,
+                "parentsByLevel": [
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309201,
+                "utxoCommitment": "0741d1e77ad7280df859b499027c777b7714474dc9d81454521e717122acd6c4",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f7e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "blockTime": 1730085309201,
+                        "computeMass": 0,
+                        "hash": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                        "transactionId": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170167,
+                "childrenHashes": [],
+                "difficulty": 59877344599.49805,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                    "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "transactionIds": [
+                    "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8774ad5b2e89e1f96d0afdf160ce7760af43d52b6222ff857b2cae386b95c8c8",
+                "bits": 470363372,
+                "blueScore": 5170161,
+                "blueWork": "000000000000000000000000000000000ab7d4adcd42348d",
+                "daaScore": 5486212,
+                "hash": "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c",
+                "hashMerkleRoot": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                "nonce": 9716539668521020000,
+                "parentsByLevel": [
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309215,
+                "utxoCommitment": "e93858305307dd450ab417f48b2502ffc25379403ead996729eae27c1765bfec",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f1e34e000000000000743ba40b00000000002220fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c",
+                        "blockTime": 1730085309215,
+                        "computeMass": 0,
+                        "hash": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                        "transactionId": "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170161,
+                "childrenHashes": [],
+                "difficulty": 59915780875.142136,
+                "hash": "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007",
+                "transactionIds": [
+                    "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d",
+                "bits": 470363758,
+                "blueScore": 5170167,
+                "blueWork": "000000000000000000000000000000000ab7d5551cdc4eda",
+                "daaScore": 5486218,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "hashMerkleRoot": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                "nonce": 12523409151752584,
+                "parentsByLevel": [
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309201,
+                "utxoCommitment": "0741d1e77ad7280df859b499027c777b7714474dc9d81454521e717122acd6c4",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f7e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "blockTime": 1730085309201,
+                        "computeMass": 0,
+                        "hash": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                        "transactionId": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170167,
+                "childrenHashes": [],
+                "difficulty": 59877344599.49805,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                    "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "transactionIds": [
+                    "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8774ad5b2e89e1f96d0afdf160ce7760af43d52b6222ff857b2cae386b95c8c8",
+                "bits": 470363372,
+                "blueScore": 5170161,
+                "blueWork": "000000000000000000000000000000000ab7d4adcd42348d",
+                "daaScore": 5486212,
+                "hash": "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                "hashMerkleRoot": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                "nonce": 15001082457230303000,
+                "parentsByLevel": [
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309215,
+                "utxoCommitment": "e93858305307dd450ab417f48b2502ffc25379403ead996729eae27c1765bfec",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f1e34e000000000000743ba40b00000000002220fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "blockTime": 1730085309215,
+                        "computeMass": 0,
+                        "hash": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                        "transactionId": "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170161,
+                "childrenHashes": [],
+                "difficulty": 59915780875.142136,
+                "hash": "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007",
+                "transactionIds": [
+                    "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a",
+                "bits": 470363626,
+                "blueScore": 5170169,
+                "blueWork": "000000000000000000000000000000000ab7d58ce5505f9e",
+                "daaScore": 5486220,
+                "hash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "hashMerkleRoot": "a33670c6ab943991e77f04f254e6bfebcd20bda9e81ff3864e23896c915050d3",
+                "nonce": 15425847818692564,
+                "parentsByLevel": [
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309791,
+                "utxoCommitment": "c1f191d1c235df2f73e25387c28f1d2e13edee68b59af48c027be5d5b81920a2",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f9e34e000000000000743ba40b00000000002220c1ee595417c531f982af7ffda2091ceb68eeec3c7f1af3a92cc1d9dec094e304ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "blockTime": 1730085309791,
+                        "computeMass": 0,
+                        "hash": "a33670c6ab943991e77f04f254e6bfebcd20bda9e81ff3864e23896c915050d3",
+                        "transactionId": "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170169,
+                "childrenHashes": [],
+                "difficulty": 59890483061.15578,
+                "hash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                    "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "transactionIds": [
+                    "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d",
+                "bits": 470363758,
+                "blueScore": 5170167,
+                "blueWork": "000000000000000000000000000000000ab7d5551cdc4eda",
+                "daaScore": 5486218,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "hashMerkleRoot": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                "nonce": 12523409151752584,
+                "parentsByLevel": [
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309201,
+                "utxoCommitment": "0741d1e77ad7280df859b499027c777b7714474dc9d81454521e717122acd6c4",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f7e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "blockTime": 1730085309201,
+                        "computeMass": 0,
+                        "hash": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                        "transactionId": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170167,
+                "childrenHashes": [
+                    "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743"
+                ],
+                "difficulty": 59877344599.49805,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                    "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "transactionIds": [
+                    "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8774ad5b2e89e1f96d0afdf160ce7760af43d52b6222ff857b2cae386b95c8c8",
+                "bits": 470363372,
+                "blueScore": 5170161,
+                "blueWork": "000000000000000000000000000000000ab7d4adcd42348d",
+                "daaScore": 5486212,
+                "hash": "4b76497864a16727ff744e369065ccfc488d7a49b3f14e69ac9510e59036998b",
+                "hashMerkleRoot": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                "nonce": 15001082543634240000,
+                "parentsByLevel": [
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309215,
+                "utxoCommitment": "e93858305307dd450ab417f48b2502ffc25379403ead996729eae27c1765bfec",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f1e34e000000000000743ba40b00000000002220fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "4b76497864a16727ff744e369065ccfc488d7a49b3f14e69ac9510e59036998b",
+                        "blockTime": 1730085309215,
+                        "computeMass": 0,
+                        "hash": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                        "transactionId": "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170161,
+                "childrenHashes": [],
+                "difficulty": 59915780875.142136,
+                "hash": "4b76497864a16727ff744e369065ccfc488d7a49b3f14e69ac9510e59036998b",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007",
+                "transactionIds": [
+                    "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a",
+                "bits": 470363626,
+                "blueScore": 5170169,
+                "blueWork": "000000000000000000000000000000000ab7d58ce5505f9e",
+                "daaScore": 5486220,
+                "hash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "hashMerkleRoot": "a33670c6ab943991e77f04f254e6bfebcd20bda9e81ff3864e23896c915050d3",
+                "nonce": 15425847818692564,
+                "parentsByLevel": [
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309791,
+                "utxoCommitment": "c1f191d1c235df2f73e25387c28f1d2e13edee68b59af48c027be5d5b81920a2",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f9e34e000000000000743ba40b00000000002220c1ee595417c531f982af7ffda2091ceb68eeec3c7f1af3a92cc1d9dec094e304ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "blockTime": 1730085309791,
+                        "computeMass": 0,
+                        "hash": "a33670c6ab943991e77f04f254e6bfebcd20bda9e81ff3864e23896c915050d3",
+                        "transactionId": "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170169,
+                "childrenHashes": [
+                    "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af"
+                ],
+                "difficulty": 59890483061.15578,
+                "hash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                    "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "transactionIds": [
+                    "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "f4e3214157571030e71c6743f83359e39d6a3c900e6cc19a1d1d395f2be7a18f",
+                "bits": 470363973,
+                "blueScore": 5170163,
+                "blueWork": "000000000000000000000000000000000ab7d4e59a4b40b9",
+                "daaScore": 5486214,
+                "hash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                "hashMerkleRoot": "c627964330f9e0149d102955693e371e0dc6a856e05423bcd475a5f57d97da2f",
+                "nonce": 1373037796279110,
+                "parentsByLevel": [
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085308712,
+                "utxoCommitment": "574bb79a0350ac963fff163fe8f942f3748f79f9b73634503ff68f89ab3ee9b8",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "0000200a54dc8aac9e202b646623cf60fea088e7a2b3f94887083487a79ad53bfa018fac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qq99fhy24j0zq2myvc3u7c875zyw0g4nl9ygwzp5s7ne44fmlgqc7vc5jy2rf",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "0000205d8024da190883c4663187941d5cd27b9f1062d7d836dbfd92a031170115ad32ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qpwcqfx6ryyg83rxxxreg82u6fae7yrz6lvrdklaj2srz9cpzkknydhnyycyh",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f3e34e000000000000743ba40b00000000002220ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                        "blockTime": 1730085308712,
+                        "computeMass": 0,
+                        "hash": "c627964330f9e0149d102955693e371e0dc6a856e05423bcd475a5f57d97da2f",
+                        "transactionId": "510eb1666ccc4e2c69ffef01b9eed61019063852555296dc1d2520e90ca88820"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170163,
+                "childrenHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                ],
+                "difficulty": 59855957169.02267,
+                "hash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777",
+                    "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777",
+                "transactionIds": [
+                    "510eb1666ccc4e2c69ffef01b9eed61019063852555296dc1d2520e90ca88820"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "76ed26f26f999ba1d59a75b34f0eaa5ecb2ba25e3535e38ec5477fe72f1d4b6f",
+                "bits": 470364151,
+                "blueScore": 5170165,
+                "blueWork": "000000000000000000000000000000000ab7d51d6032a031",
+                "daaScore": 5486216,
+                "hash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "hashMerkleRoot": "fc44dde37545b4e6a74fcc0b790ba594e83b73ccb5e9d802549ebc8993a21aa9",
+                "nonce": 31901533031379676,
+                "parentsByLevel": [
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085308919,
+                "utxoCommitment": "07f870b0266d8b0269050698cf2e8155b96194e84f9c6a93904ff8db6cf9dc9b",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020624057dbef5d1cb9ea51fba21e0df77e32e5233e1bdf46dcc65ce74f13e8c0e3ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp3yq47maaw3ew0228a6y8sd7alr9efr8cda73kucewwwncnarqwxtnale8jh",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f5e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "blockTime": 1730085308919,
+                        "computeMass": 0,
+                        "hash": "fc44dde37545b4e6a74fcc0b790ba594e83b73ccb5e9d802549ebc8993a21aa9",
+                        "transactionId": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170165,
+                "childrenHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                ],
+                "difficulty": 59838261923.56452,
+                "hash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211",
+                    "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211",
+                "transactionIds": [
+                    "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969",
+                "bits": 470362262,
+                "blueScore": 5170174,
+                "blueWork": "000000000000000000000000000000000ab7d61862e2f6e0",
+                "daaScore": 5486225,
+                "hash": "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af",
+                "hashMerkleRoot": "160f2409a7c2ea7bcbeae3fb1ed82186bce092372a0441560806174ef316c931",
+                "nonce": 113722498044320690,
+                "parentsByLevel": [
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66",
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085311627,
+                "utxoCommitment": "31fe0d4b637ddc3351f057eacd2ade8fa019cde11cf508cec2344d646c0b090b",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020c1ee595417c531f982af7ffda2091ceb68eeec3c7f1af3a92cc1d9dec094e304ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrq7uk25zlznr7vz4allmgsfrn4k3mhv83l34uaf9nqanhkqjn3sgdals4236",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "fee34e000000000000743ba40b000000000022205d8024da190883c4663187941d5cd27b9f1062d7d836dbfd92a031170115ad32ac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af",
+                        "blockTime": 1730085311627,
+                        "computeMass": 0,
+                        "hash": "160f2409a7c2ea7bcbeae3fb1ed82186bce092372a0441560806174ef316c931",
+                        "transactionId": "546c25f856bab791bf34f00c87a5f6f8c8b37cc161ed50edd6b2c7a87b7b7939"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170174,
+                "childrenHashes": [],
+                "difficulty": 60026585549.427315,
+                "hash": "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                    "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66",
+                    "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                    "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                    "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "transactionIds": [
+                    "546c25f856bab791bf34f00c87a5f6f8c8b37cc161ed50edd6b2c7a87b7b7939"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d",
+                "bits": 470363758,
+                "blueScore": 5170167,
+                "blueWork": "000000000000000000000000000000000ab7d5551cdc4eda",
+                "daaScore": 5486218,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "hashMerkleRoot": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                "nonce": 12523409151752584,
+                "parentsByLevel": [
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309201,
+                "utxoCommitment": "0741d1e77ad7280df859b499027c777b7714474dc9d81454521e717122acd6c4",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f7e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "blockTime": 1730085309201,
+                        "computeMass": 0,
+                        "hash": "fd9f7903bc8e2301b070301ae414cbe120a105bdeee0a0f4d288cd39d2379ec4",
+                        "transactionId": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170167,
+                "childrenHashes": [
+                    "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743"
+                ],
+                "difficulty": 59877344599.49805,
+                "hash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                    "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "transactionIds": [
+                    "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8774ad5b2e89e1f96d0afdf160ce7760af43d52b6222ff857b2cae386b95c8c8",
+                "bits": 470363372,
+                "blueScore": 5170161,
+                "blueWork": "000000000000000000000000000000000ab7d4adcd42348d",
+                "daaScore": 5486212,
+                "hash": "4b76497864a16727ff744e369065ccfc488d7a49b3f14e69ac9510e59036998b",
+                "hashMerkleRoot": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                "nonce": 15001082543634240000,
+                "parentsByLevel": [
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309215,
+                "utxoCommitment": "e93858305307dd450ab417f48b2502ffc25379403ead996729eae27c1765bfec",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrh8mwxv59yrkc8al9f8tqkw2gk8jp2a27rfsgvn2xv2vcfutvlug6psas68c",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f1e34e000000000000743ba40b00000000002220fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "4b76497864a16727ff744e369065ccfc488d7a49b3f14e69ac9510e59036998b",
+                        "blockTime": 1730085309215,
+                        "computeMass": 0,
+                        "hash": "c636c55f403f1859b5398d246eeac4858723ca8c6a85e6e2a4bf1d9432498810",
+                        "transactionId": "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170161,
+                "childrenHashes": [],
+                "difficulty": 59915780875.142136,
+                "hash": "4b76497864a16727ff744e369065ccfc488d7a49b3f14e69ac9510e59036998b",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007",
+                "transactionIds": [
+                    "728a8d8a156830efb4d98be4790fed324dfea6905c40d9acbac68c552b3f341d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "8a6accad280190a1a82bde7f883b6e39d8c363ccd21b424ba63ec8067fd2125a",
+                "bits": 470363626,
+                "blueScore": 5170169,
+                "blueWork": "000000000000000000000000000000000ab7d58ce5505f9e",
+                "daaScore": 5486220,
+                "hash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "hashMerkleRoot": "a33670c6ab943991e77f04f254e6bfebcd20bda9e81ff3864e23896c915050d3",
+                "nonce": 15425847818692564,
+                "parentsByLevel": [
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                        "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085309791,
+                "utxoCommitment": "c1f191d1c235df2f73e25387c28f1d2e13edee68b59af48c027be5d5b81920a2",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f9e34e000000000000743ba40b00000000002220c1ee595417c531f982af7ffda2091ceb68eeec3c7f1af3a92cc1d9dec094e304ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "blockTime": 1730085309791,
+                        "computeMass": 0,
+                        "hash": "a33670c6ab943991e77f04f254e6bfebcd20bda9e81ff3864e23896c915050d3",
+                        "transactionId": "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170169,
+                "childrenHashes": [
+                    "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af"
+                ],
+                "difficulty": 59890483061.15578,
+                "hash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                    "f1925dc7647a03c205cbba9ac6a6c7d2c435ec9d62631d30192e599c560e7b0c"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829",
+                "transactionIds": [
+                    "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "f4e3214157571030e71c6743f83359e39d6a3c900e6cc19a1d1d395f2be7a18f",
+                "bits": 470363973,
+                "blueScore": 5170163,
+                "blueWork": "000000000000000000000000000000000ab7d4e59a4b40b9",
+                "daaScore": 5486214,
+                "hash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                "hashMerkleRoot": "c627964330f9e0149d102955693e371e0dc6a856e05423bcd475a5f57d97da2f",
+                "nonce": 1373037796279110,
+                "parentsByLevel": [
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af",
+                        "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085308712,
+                "utxoCommitment": "574bb79a0350ac963fff163fe8f942f3748f79f9b73634503ff68f89ab3ee9b8",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "0000200a54dc8aac9e202b646623cf60fea088e7a2b3f94887083487a79ad53bfa018fac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qq99fhy24j0zq2myvc3u7c875zyw0g4nl9ygwzp5s7ne44fmlgqc7vc5jy2rf",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "0000205d8024da190883c4663187941d5cd27b9f1062d7d836dbfd92a031170115ad32ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qpwcqfx6ryyg83rxxxreg82u6fae7yrz6lvrdklaj2srz9cpzkknydhnyycyh",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f3e34e000000000000743ba40b00000000002220ee7db8cca1483b60fdf9527582ce522c79055d57869821935198a6613c5b3fc4ac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                        "blockTime": 1730085308712,
+                        "computeMass": 0,
+                        "hash": "c627964330f9e0149d102955693e371e0dc6a856e05423bcd475a5f57d97da2f",
+                        "transactionId": "510eb1666ccc4e2c69ffef01b9eed61019063852555296dc1d2520e90ca88820"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170163,
+                "childrenHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                ],
+                "difficulty": 59855957169.02267,
+                "hash": "dd4b6e8fc5a9cbdf8a0d2479300391d3b2391230f31f2b6314e125fc8057dba5",
+                "isChainBlock": false,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777",
+                    "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "32141dd5f1d30f5e7c8965aa45021a8832c8d0b4635c1cad9f34037513707777",
+                "transactionIds": [
+                    "510eb1666ccc4e2c69ffef01b9eed61019063852555296dc1d2520e90ca88820"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "76ed26f26f999ba1d59a75b34f0eaa5ecb2ba25e3535e38ec5477fe72f1d4b6f",
+                "bits": 470364151,
+                "blueScore": 5170165,
+                "blueWork": "000000000000000000000000000000000ab7d51d6032a031",
+                "daaScore": 5486216,
+                "hash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "hashMerkleRoot": "fc44dde37545b4e6a74fcc0b790ba594e83b73ccb5e9d802549ebc8993a21aa9",
+                "nonce": 31901533031379676,
+                "parentsByLevel": [
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640",
+                        "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "2766402d958b80948b6bc757e0a398addd82d40feed5df7c659a8dc6ca01d3af"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085308919,
+                "utxoCommitment": "07f870b0266d8b0269050698cf2e8155b96194e84f9c6a93904ff8db6cf9dc9b",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp6f4tmxnpddnus0dscn0mdkxvmca734wehzjq923ltl4yxg8vq5s8ew4qy57",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020624057dbef5d1cb9ea51fba21e0df77e32e5233e1bdf46dcc65ce74f13e8c0e3ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qp3yq47maaw3ew0228a6y8sd7alr9efr8cda73kucewwwncnarqwxtnale8jh",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "f5e34e000000000000743ba40b00000000002220749aaf66985ad9f20f6c3137edb633378efa35766e2900aa8fd7fa90c83b0148ac302e31352e322f276c6f6c4d696e657220312e3931272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                        "blockTime": 1730085308919,
+                        "computeMass": 0,
+                        "hash": "fc44dde37545b4e6a74fcc0b790ba594e83b73ccb5e9d802549ebc8993a21aa9",
+                        "transactionId": "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170165,
+                "childrenHashes": [
+                    "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                ],
+                "difficulty": 59838261923.56452,
+                "hash": "c7799773022af817dea9c634eb8ff3dddcb4ee4ffe5ac542e02a6e5b9726b0c2",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211",
+                    "14e5d839a868486e4c26aecfe8b34549dbfd6adfc40402ac66f7f1655281e640"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "bff6ed524c91cecd6a5c32d2c06e91d4b00e15a9246211638bcb0c718c238211",
+                "transactionIds": [
+                    "8be1a44ceb704aa40911c688ed26be0b6077d4bdcce7381a1d04f79d792fe14d"
+                ]
+            }
+        },
+        {
+            "header": {
+                "acceptedIdMerkleRoot": "a58c9d4a81cd8a39f5013a92d888594a06eb3488fd53ec50a7faf432c10f9969",
+                "bits": 470362262,
+                "blueScore": 5170174,
+                "blueWork": "000000000000000000000000000000000ab7d61862e2f6e0",
+                "daaScore": 5486225,
+                "hash": "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af",
+                "hashMerkleRoot": "160f2409a7c2ea7bcbeae3fb1ed82186bce092372a0441560806174ef316c931",
+                "nonce": 113722498044320690,
+                "parentsByLevel": [
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                        "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66"
+                    ],
+                    [
+                        "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6",
+                        "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66",
+                        "e377f41eae858140cec5c381937b5748547733edd55a176574f80c8c4812f829"
+                    ],
+                    [
+                        "b49b35242bc04b062b3b0445e17150be21158da40f065c8287d2893fd8683007"
+                    ],
+                    [
+                        "c449ab95a23ad1224169d084b1e89abb1e41a96c690c4671e3bce2328970defa"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "b169d79ed9e1fbe13a696feadf39cdd609ff6d8d3436a691673ccf992c3398b2"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "72f84130e98c6faa112bc7d1eea7fa46cc8ebb6b5c42ce9b1e87ee59f12365ca"
+                    ],
+                    [
+                        "784c36afcf88823d789e9f7efa3ec9b7d33e855a21991230edd09cb22f5ad961"
+                    ],
+                    [
+                        "c391ca63bcf63c8c359f24b1e06446e37e6afac068959a50e2658b7f048a6eba"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "6302ea27d32aaa5952213c718a47133eff9ff818ee41a81c7280a8ad10b361c7"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "0f8e044ad0823f42480c66b52129fd5510e8529c87c273ad136a8679618e2676"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "bb167e2883a1a7bd1a37bf3e9b440df408c5a107852e7a680aa7bb4a32371b46"
+                    ],
+                    [
+                        "92897368647e5de00ccc35a8f19e882ad9c4cc54548a1409047fb605741b90cd"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "280985aee17a7437820fe68fe340e88b99d6ad199c549c2815840a097f125611"
+                    ],
+                    [
+                        "2dab7eeb44a0938ec9a823a8c083546ed22b4b493b9a02b82e732eca4b3bcb22"
+                    ]
+                ],
+                "pruningPoint": "e8e218d4da267a2c4ab8607930f6d8fb404a0467816434aecce1e9756b11d697",
+                "timestamp": 1730085311627,
+                "utxoCommitment": "31fe0d4b637ddc3351f057eacd2ade8fa019cde11cf508cec2344d646c0b090b",
+                "version": 1
+            },
+            "transactions": [
+                {
+                    "gas": 0,
+                    "inputs": [],
+                    "lockTime": 0,
+                    "mass": 0,
+                    "outputs": [
+                        {
+                            "scriptPublicKey": "000020c1ee595417c531f982af7ffda2091ceb68eeec3c7f1af3a92cc1d9dec094e304ac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrq7uk25zlznr7vz4allmgsfrn4k3mhv83l34uaf9nqanhkqjn3sgdals4236",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        },
+                        {
+                            "scriptPublicKey": "000020fe6691b9e4296a462ffe2f2becf270ce0436ef48cbd63e457c2fe0896cddc05dac",
+                            "value": 50000000000,
+                            "verboseData": {
+                                "scriptPublicKeyAddress": "xenom:qrlxdydeus5k5330lchjhm8jwr8qgdh0fr9av0j90sh7pztvmhq96vw7xancm",
+                                "scriptPublicKeyType": "PubKey"
+                            }
+                        }
+                    ],
+                    "payload": "fee34e000000000000743ba40b000000000022205d8024da190883c4663187941d5cd27b9f1062d7d836dbfd92a031170115ad32ac302e31352e322f27526967656c2f312e31392e31272076696120507972696e7079692f707972696e2d7374726174756d2d6272696467655f76312e312e36",
+                    "subnetworkId": "0100000000000000000000000000000000000000",
+                    "verboseData": {
+                        "blockHash": "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af",
+                        "blockTime": 1730085311627,
+                        "computeMass": 0,
+                        "hash": "160f2409a7c2ea7bcbeae3fb1ed82186bce092372a0441560806174ef316c931",
+                        "transactionId": "546c25f856bab791bf34f00c87a5f6f8c8b37cc161ed50edd6b2c7a87b7b7939"
+                    },
+                    "version": 0
+                }
+            ],
+            "verboseData": {
+                "blueScore": 5170174,
+                "childrenHashes": [],
+                "difficulty": 60026585549.427315,
+                "hash": "3ae28e2615894d6c5e7d180109fe30f8199da9f897f50bc26f41ea4b061130af",
+                "isChainBlock": true,
+                "isHeaderOnly": false,
+                "mergeSetBluesHashes": [
+                    "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                    "4beb3f5533386caa94641839d7c48f444ae6cc54eec635953d6bf67d8a8dde66",
+                    "4f15b9a334386270efbede2fcad59648ca8d276852158a3a42b95349015ffbad",
+                    "baf246b00d92cd02535f4c8f46bf7252e9648fb4ba9871851925876967b3e89b",
+                    "bc9878f8dd12921a9c1b4b9c8967f4a15cf607e6b7f581fa3046249652e0e0b6"
+                ],
+                "mergeSetRedsHashes": [],
+                "selectedParentHash": "2419c0d3f97ea7b2fb7400357da3b963eb9109fe5f280c110dd6cba0181b0743",
+                "transactionIds": [
+                    "546c25f856bab791bf34f00c87a5f6f8c8b37cc161ed50edd6b2c7a87b7b7939"
+                ]
+            }
+        }
+    ]
+
+    // Build the graph from the blockDAG data
+    const graph = buildBlockDAG(blockData);
+
+    // Instantiate Sigma.js and render the graph
+    const sigmaInstance = new sigma(graph, document.getElementById("container"));
+</script>
+</body>
+</html>
