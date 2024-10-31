@@ -12,7 +12,7 @@ import {
 } from '@react-three/drei';
 import * as d3 from 'd3';
 
-import data from './../data.json';
+import data from './data.json';
 import * as PropTypes from "prop-types";
 
 
