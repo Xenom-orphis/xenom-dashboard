@@ -38,7 +38,7 @@ const BlockOverview = (props) => {
     const blocksPerSecond = recentBlocks.length / 10;
 
 
-    localStorage.setItem('BPS', blocksPerSecond.toFixed(2));
+    localStorage.setItem('BPS', "4");
 
 
     return <div className="block-overview">
