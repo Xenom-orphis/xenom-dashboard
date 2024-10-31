@@ -18,15 +18,13 @@ import * as PropTypes from "prop-types";
 
 
 
-const BlockDAGChart = () => {
+const BlockDAGChart = ({blocks}) => {
 
-    const [isPaused, setIsPaused] = useState(false);
+    const [isPaused, setIsPaused] = useState(true);
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
-    const [currentBlocks, setCurrentBlocks] = useState(data);
-    setTimeout( () => {
-        setIsPaused(true)
-    }, 2000)
+    const [currentBlocks, setCurrentBlocks] = useState([]);
+
     useEffect(() => {
         const blocks1 = JSON.parse(localStorage.getItem('cacheBlocks'));
         if (!isPaused) {
